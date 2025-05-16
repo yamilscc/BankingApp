@@ -7,6 +7,11 @@ import com.yamil.banking_app.service.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.yamil.banking_app.dto.EmailMessageDto;
+import com.yamil.banking_app.publisher.EmailMessagePublisher; //Productor
+
+
+
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -14,10 +19,12 @@ import java.util.stream.Collectors;
 public class AccountServiceImpl implements AccountService {
 
     private AccountRepository accountRepository;
+    private final EmailMessagePublisher emailMessagePublisher;
 
     @Autowired //No es necesaria esta annotation desde Spring 4.3
-    public AccountServiceImpl(AccountRepository accountRepository) {
+    public AccountServiceImpl(AccountRepository accountRepository, EmailMessagePublisher emailMessagePublisher) {
         this.accountRepository = accountRepository;
+        this.emailMessagePublisher = emailMessagePublisher;
     }
 
     @Override //Aquí implementamos el método abstracto de la interfaz AccountService
@@ -25,6 +32,14 @@ public class AccountServiceImpl implements AccountService {
 
         Account account = AccountMapper.mapToAccount(accountDto);
         Account savedAccount = accountRepository.save(account); //Guardamos en la DB
+
+        /*Envío de correo al crear una cuenta mediante una cola de mensajería en RabbitMQ*/
+        EmailMessageDto email = new EmailMessageDto(
+                savedAccount.getEmail(),
+                "Bienvenido/a a Yamil BankingApp!",
+                "Hola " + savedAccount.getAccountHolderName() + ", tu cuenta fue creada con éxito! Tenés un saldo inicial de $" + savedAccount.getBalance()
+        );
+        emailMessagePublisher.sendEmailMessage(email); //El Publisher (Productor) envía el mensaje al Exchange usando el método que ya implementé
 
         return AccountMapper.mapToAccountDto(savedAccount); //Devolvemos la entidad persistida y actualizada
     }
