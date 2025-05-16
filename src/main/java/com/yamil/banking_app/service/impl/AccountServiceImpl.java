@@ -25,4 +25,46 @@ public class AccountServiceImpl implements AccountService {
 
         return AccountMapper.mapToAccountDto(savedAccount); //Devolvemos la entidad persistida y actualizada
     }
+
+    @Override
+    public AccountDto getAccountById(Long id) {
+
+        AccountDto response = AccountMapper.
+                mapToAccountDto(accountRepository
+                        .findById(id)
+                        .orElseThrow(() -> new RuntimeException("La cuenta no existe!"))); //Busca la cuenta por ID, sino la encuentra, retorna una RuntimeException. Fue necesario el mapper, ya que el método orElseThrow() (que en el fondo es casi un get()) devuelve el mismo tipo de dato que nuestro modelo o Entity (en nuestro caso, Account)
+
+        return response;
+    }
+
+    @Override
+    public AccountDto deposit(Long id, double amount) {
+
+        Account accountAsIs = accountRepository
+                .findById(id)
+                .orElseThrow(() -> new RuntimeException("La cuenta no existe!")); //Obtenemos el estado actual (As Is) de la cuenta
+
+        double total = accountAsIs.getBalance() + amount; //Saldo actual + depósito
+        accountAsIs.setBalance(total); // Actualizamos el saldo de la cuenta
+
+        return AccountMapper.mapToAccountDto(accountRepository.save(accountAsIs)); //Guardamos la cuenta con saldo modificado en la DB y hacemos la conversión a DTO.
+    }
+
+    @Override
+    public AccountDto withdraw(Long id, double amount) {
+
+        Account accountAsIs = accountRepository
+                            .findById(id)
+                            .orElseThrow(() -> new RuntimeException("La cuenta no existe!"));
+
+        if(accountAsIs.getBalance() < amount) {
+            throw new RuntimeException("Saldo insuficiente!");
+        }
+        double total = accountAsIs.getBalance() - amount; //Saldo actual - extracción
+        accountAsIs.setBalance(total); // Actualizamos el saldo de la cuenta
+
+        return AccountMapper.mapToAccountDto(accountRepository.save(accountAsIs)); //Guardamos la cuenta con saldo modificado en la DB y hacemos la conversión a DTO.
+    }
+
+
 }
