@@ -7,6 +7,9 @@ import com.yamil.banking_app.service.AccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 public class AccountServiceImpl implements AccountService {
 
@@ -64,6 +67,26 @@ public class AccountServiceImpl implements AccountService {
         accountAsIs.setBalance(total); // Actualizamos el saldo de la cuenta
 
         return AccountMapper.mapToAccountDto(accountRepository.save(accountAsIs)); //Guardamos la cuenta con saldo modificado en la DB y hacemos la conversión a DTO.
+    }
+
+    @Override
+    public List<AccountDto> getAllAccounts() {
+        List<AccountDto> accountList = accountRepository
+                            .findAll() //Obtenemos todas las cuentas
+                            .stream()//Utilizamos el recurso stream
+                            .map(AccountMapper::mapToAccountDto) //Hacemos el mapping con un Method Reference
+                            .toList(); //Convertimos el stream resultante en una lista
+        return accountList;
+    }
+
+    @Override
+    public void deleteAccount(Long id) {
+
+        Account account = accountRepository
+                .findById(id)
+                .orElseThrow(() -> new RuntimeException("La cuenta no se puede borrar porque no existe!")); //Chequeamos que la cuenta exista
+
+        accountRepository.delete(account); //Si la cuenta entonces existe, se borra con esta sentencia
     }
 
 
