@@ -1,13 +1,22 @@
-# BankingApp
-Aplicación bancaria que utiliza las siguientes tecnologías: Spring Boot 3, Spring Data JPA (Hibernate), MySQL DBMS &amp; RabbitMQ. Este proyecto está desarrollado siguiendo una arquitectura en 4 capas para mantener una separación clara de responsabilidades y facilitar el mantenimiento y escalabilidad. Las capas son:
-1) Controller
-2) Service
-3) Repository
-4) Entity/Model 
+# 🏦BankingApp - Proyecto de Portafolio
+Esta es una **aplicación backend bancaria** desarrollada como proyecto de portafolio, utilizando las siguientes tecnologías:
+- Spring Boot 3
+- Spring Data JPA (Hibernate)
+- MySQL DBMS
+- RabbitMQ
+- API RESTful
 
-Además, el proyecto utiliza el patrón DTO (Data Transfer Object) para definir objetos que se utilizan para la transferencia de datos entre las capas, evitando exponer directamente las entidades de la base de datos y facilitando la validación y transformación de datos.
+## 🧱 Arquitectura del proyecto
+El proyecto está desarrollado siguiendo una **arquitectura de 4 capas**, lo que permite una clara separación de responsabilidades, mejor mantenimiento y escalabilidad. Las capas implementadas son:
+1) Controller: maneja las solicitudes HTTP y delega la lógica.
+2) Service: contiene la lógica de negocio.
+3) Repository: gestiona el acceso a la base de datos utilizando Spring Data JPA.
+4) Entity/Model: representa las entidades persistentes.
 
-La API que se diseñó cuenta con 6 recursos/endpoints:
+Además, se implementa el **patrón DTO (Data Transfer Object)** para transferir datos entre capas sin exponer directamente las entidades de la base de datos, mejorando la validación y transformación de datos.
+
+## 🔗 Endpoints disponibles
+La API RESTful cuenta con los siguientes 6 recursos/endpoints:
 1) Crear cuenta bancaria
 2) Obtener cuenta a través de su id
 3) Depositar dinero en cuenta
@@ -15,6 +24,7 @@ La API que se diseñó cuenta con 6 recursos/endpoints:
 5) Obtener todas las cuentas cargadas
 6) Eliminar una cuenta
 
-Asimismo, se incorporó un servicio de cola de mensajería mediante RabbitMQ para "simular" por consola el envío de un correo de bienvenida al usuario cuando crea una cuenta en la aplicación.
+## 📬 Integración con RabbitMQ
+Se incorporó un servicio de cola de mensajería mediante RabbitMQ para "simular" por consola el envío de un correo de bienvenida al usuario cuando crea una cuenta en la aplicación.
 
 
