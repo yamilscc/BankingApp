@@ -14,6 +14,5 @@ public class EmailMessageListener {
         System.out.println("📧 Enviando correo a: " + emailMessageDto.getTo());
         System.out.println("Asunto: " + emailMessageDto.getSubject());
         System.out.println("Mensaje: " + emailMessageDto.getBody());
-        // Aquí podrías llamar a un servicio real de envío de mails con JavaMailSender
     }
 }
